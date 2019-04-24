@@ -15,6 +15,8 @@ class OrdersService {
 
     const orderModel = new Order(order);
 
+    await orderModel.save();
+
     try {
       const {paymentId} = await paymentsService.createPayment(orderModel.toJSON());
       orderModel.set('paymentId', paymentId);
