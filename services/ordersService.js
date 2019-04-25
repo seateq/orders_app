@@ -1,6 +1,8 @@
 const Order                           = require('../model/Order');
 const {CREATED, CANCELLED, DELIVERED} = require('../model/OrderStates');
-const paymentsService                 = require('./paymentsService');
+const PaymentService                  = require('./PaymentService');
+
+const paymentService = new PaymentService();
 
 const deliver = (order) => {
   return new Promise(resolve => {
@@ -18,7 +20,7 @@ class OrdersService {
     await orderModel.save();
 
     try {
-      const {paymentId} = await paymentsService.createPayment(orderModel.toJSON());
+      const {paymentId} = await paymentService.createPayment(orderModel.toJSON());
       orderModel.set('paymentId', paymentId);
     } catch (e) {
       orderModel.set('state', CANCELLED);
