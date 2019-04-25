@@ -25,9 +25,10 @@ class OrdersService {
     } catch (e) {
       orderModel.set('state', CANCELLED);
       orderModel.set('cancelReason', e.message);
+      return orderModel;
+    } finally {
+      await orderModel.save();
     }
-
-    await orderModel.save();
 
     await deliver(order);
 
