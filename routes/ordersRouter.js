@@ -1,7 +1,7 @@
 const express = require('express');
 const router  = express.Router();
 
-const ordersService = require('../services/ordersService');
+const orderService = require('services/orderService');
 
 const extractUserInfo = (req) => {
 
@@ -25,7 +25,7 @@ router.post('/', async (req, res) => {
   const user          = extractUserInfo(req);
   const {type, count} = extractOrderInfo(req);
 
-  const createdOrder = await ordersService.create({
+  const createdOrder = await orderService.create({
     user,
     type,
     count
