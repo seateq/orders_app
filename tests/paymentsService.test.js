@@ -1,27 +1,24 @@
 const {beforeEach, describe} = require('mocha');
-const PaymentsService        = require('../services/PaymentsService');
-const fm                     = require('fetch-mock');
-const chai                   = require('chai');
-const {expect}               = chai;
 
+process.env.PAYMENT_SERVICE_URL = 'http://mock.url';
+
+const paymentService = require('../services/paymentService');
+const fm             = require('fetch-mock');
+const chai           = require('chai');
+const {expect}       = chai;
 const chaiAsPromised = require('chai-as-promised');
 
 chai.use(chaiAsPromised);
 
-const paymentsEndpointURL = 'http://mock.url/api/payments';
-
-let paymentService;
-
-beforeEach(() => {
-  process.env.PAYMENT_SERVICE_URL = 'http://mock.url';
-
-  paymentService = new PaymentsService();
-
-  fm.reset();
-});
-
 describe('Payment Service', () => {
-  describe('Create new payment', async () => {
+
+  const paymentsEndpointURL = 'http://mock.url/api/payments';
+
+  beforeEach(() => {
+    fm.reset();
+  });
+
+  describe('Create a new payment', () => {
 
     it('When payment service is down, then receive an exception', async () => {
 

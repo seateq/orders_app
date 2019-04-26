@@ -15,7 +15,7 @@ const makeRequest = async (url, payload) => {
     if (e.code === 'ECONNREFUSED') {
       console.error('Payment service is down. Make sure it is running and PAYMENT_SERVICE_URL environment variable has been set correctly');
     }
-    console.error('Error during making request to payment service.', e);
+    console.error('Error during making request to payment service. ' + e.message);
     throw e;
   }
 
@@ -38,7 +38,7 @@ class PaymentService {
     const {PAYMENT_SERVICE_URL} = process.env;
 
     if (!PAYMENT_SERVICE_URL || !validUrl.isUri(PAYMENT_SERVICE_URL)) {
-      throw new Error('PAYMENT_SERVICE_URL is not specified or has incorrect')
+      throw new Error('PAYMENT_SERVICE_URL is not specified or has incorrect format')
     }
 
     this.paymentsEndpoint = urljoin(PAYMENT_SERVICE_URL, 'api/payments');
@@ -55,4 +55,4 @@ class PaymentService {
   }
 }
 
-module.exports = PaymentService;
+module.exports = new PaymentService();
