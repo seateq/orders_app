@@ -8,6 +8,7 @@ const logger       = require('morgan');
 const mongoose     = require('mongoose');
 
 const ordersRouter = require('./routes/ordersRouter');
+const homeRouter   = require('./routes/homeRouter');
 
 const app = express();
 
@@ -18,6 +19,7 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/api/orders', ordersRouter);
+app.use('/', homeRouter);
 
 mongoose.connect(process.env.MONGO_CONNECT_URL, {useNewUrlParser: true});
 
