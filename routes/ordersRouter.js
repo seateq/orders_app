@@ -34,13 +34,20 @@ router.post('/', async (req, res) => {
   res.send(createdOrder);
 });
 
-router.post('/cancel/:orderId', function (req, res, next) {
-  res.send('cancel');
+router.post('/cancel/:orderId', async (req, res, next) => {
+  const orderId = req.params.orderId;
+
+  const order = await orderService.cancel(orderId);
+
+  res.send(order);
 });
 
-router.get('/:id', function (req, res, next) {
-  res.send('get order info by id');
-});
+router.get('/:orderId', async (req, res, next) => {
+  const orderId = req.params.orderId;
 
+  const order = await orderService.getOrder(orderId);
+
+  res.send(order);
+});
 
 module.exports = router;

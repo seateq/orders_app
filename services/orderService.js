@@ -6,7 +6,7 @@ const deliveryService                            = require('services/deliverySer
 class OrderService {
 
   async create(order) {
-    
+
     const orderModel = await Order.create({
       ...order,
       state: CREATED
@@ -34,7 +34,7 @@ class OrderService {
   }
 
   async cancel(orderId) {
-    const order = await Order.find({_id: orderId});
+    const order = await Order.findOne({_id: orderId});
 
     order.set('state', CANCELLED);
 
@@ -44,7 +44,7 @@ class OrderService {
   }
 
   getOrder(orderId) {
-
+    return Order.findOne({_id: orderId});
   }
 }
 
