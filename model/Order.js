@@ -10,7 +10,8 @@ const OrderSchema = new Schema({
   user        : Object,
   type        : String,
   count       : Number,
-  cancelReason: String
+  cancelReason: String,
+  paymentId   : String
 });
 
 const OrderModel = model('orders', OrderSchema);
