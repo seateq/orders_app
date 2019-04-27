@@ -15,8 +15,11 @@ describe('POST /api/payments', () => {
   let app,
       deliveryService;
 
-  beforeEach(done => {
+  before(async () => {
+    await mockgoose.prepareStorage()
+  });
 
+  beforeEach(() => {
     deliveryService = {
       deliver() {
         return Promise.resolve();
@@ -25,14 +28,16 @@ describe('POST /api/payments', () => {
 
     mockRequire('services/deliveryService', deliveryService);
 
-    mockgoose.prepareStorage().then(function () {
-      app = require('../app');
-      done();
-    });
+    app = require('../app');
   });
 
-  afterEach(() => {
+  afterEach(async () => {
     paymentServiceMockHttpServer.cleanAll();
+    await mockgoose.helper.reset();
+  });
+
+  after(async () => {
+    await mockgoose.shutdown();
   });
 
   describe('Create new Order', async () => {
