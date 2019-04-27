@@ -1,8 +1,8 @@
-const {beforeEach, describe} = require('mocha');
+require('rootpath')();
 
 process.env.PAYMENT_SERVICE_URL = 'http://mock.url';
 
-const paymentService = require('../services/paymentService');
+const paymentService = require('services/paymentService');
 const fm             = require('fetch-mock');
 const chai           = require('chai');
 const {expect}       = chai;
@@ -18,7 +18,7 @@ describe('Payment Service', () => {
     fm.reset();
   });
 
-  describe('Create a new payment', () => {
+  describe('Create a new Payment', () => {
 
     it('When payment service is down, then receive an exception', async () => {
 
@@ -65,6 +65,5 @@ describe('Payment Service', () => {
 
       return expect(promiseResult).to.deep.equal(paymentDataMock);
     });
-
   });
 });

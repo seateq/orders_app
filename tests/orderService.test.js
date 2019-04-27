@@ -1,29 +1,19 @@
 require('rootpath')();
 
-const {beforeEach, describe}                     = require('mocha');
+const importFresh                                = require('import-fresh');
 const mockRequire                                = require('mock-require');
-const {CREATED, CANCELLED, DELIVERED, CONFIRMED} = require('model/OrderStates');
-const Order                                      = require('../model/Order');
 const chai                                       = require('chai');
 const sinon                                      = require('sinon');
-const sinonChai                                  = require("sinon-chai");
+const sinonChai                                  = require('sinon-chai');
 const chaiAsPromised                             = require('chai-as-promised');
+const {CREATED, CANCELLED, DELIVERED, CONFIRMED} = require('model/OrderStates');
+const Order                                      = require('model/Order');
 
 chai.should();
 chai.use(sinonChai);
 chai.use(chaiAsPromised);
 
 const sandbox = sinon.sandbox.create();
-
-const paymentService = {
-  createPayment: () => {
-  }
-};
-
-const deliveryService = {
-  deliver: () => {
-  }
-};
 
 const order = {
   type : 'book',
@@ -32,27 +22,40 @@ const order = {
 
 const paymentId = '321123';
 
-let orderService,
-    createPaymentStub;
-
 describe('Order Service', () => {
+
+  let orderService,
+      paymentService,
+      deliveryService,
+      createPaymentStub;
 
   afterEach(() => {
     sandbox.restore();
   });
 
-  describe('Create new Order', async () => {
+  describe('Create a new Order', async () => {
 
     let createStub,
         setStub,
         saveStub;
 
     beforeEach(() => {
+
       createStub = sandbox.stub(Order, 'create');
       setStub    = sandbox.stub(Order.prototype, 'set');
       saveStub   = sandbox.stub(Order.prototype, 'save');
 
       createStub.returns(Order.prototype);
+
+      paymentService = {
+        createPayment: () => {
+        }
+      };
+
+      deliveryService = {
+        deliver: () => {
+        }
+      };
 
       mockRequire('services/deliveryService', deliveryService);
 
@@ -64,7 +67,7 @@ describe('Order Service', () => {
 
       mockRequire('services/paymentService', paymentService);
 
-      orderService = require('services/orderService');
+      orderService = importFresh('services/orderService');
     });
 
     it('Saves order with state "CREATED" before payment execution', async () => {
@@ -115,6 +118,6 @@ describe('Order Service', () => {
 
       saveStub.should.have.been.calledAfter(deliverStub);
       saveStub.should.have.been.calledAfter(setStub);
-    }).timeout(4000);
+    });
   });
 });

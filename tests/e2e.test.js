@@ -3,6 +3,7 @@ require('rootpath')();
 process.env.PAYMENT_SERVICE_URL = 'http://mock.url';
 
 const request                      = require('supertest');
+const importFresh                  = require('import-fresh');
 const mockRequire                  = require('mock-require');
 const mongoose                     = require('mongoose');
 const paymentServiceMockHttpServer = require('tests/paymentServiceMockHttpServer');
@@ -11,15 +12,13 @@ const Mockgoose                    = require('mockgoose').Mockgoose;
 const mockgoose                    = new Mockgoose(mongoose);
 const {DELIVERED, CANCELLED}       = require('model/OrderStates');
 
-describe('POST /api/payments', () => {
+describe('E2E Tests', () => {
   let app,
       deliveryService;
 
-  before(async () => {
-    await mockgoose.prepareStorage()
-  });
+  beforeEach(async () => {
+    await mockgoose.prepareStorage();
 
-  beforeEach(() => {
     deliveryService = {
       deliver() {
         return Promise.resolve();
@@ -28,15 +27,12 @@ describe('POST /api/payments', () => {
 
     mockRequire('services/deliveryService', deliveryService);
 
-    app = require('../app');
+    app = importFresh('../app');
   });
 
   afterEach(async () => {
     paymentServiceMockHttpServer.cleanAll();
     await mockgoose.helper.reset();
-  });
-
-  after(async () => {
     await mockgoose.shutdown();
   });
 
